@@ -46,11 +46,12 @@ container.resolve(function(users){
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
 
+        ;
         app.use(validator());
         app.use(session({
             secret: 'thisisasecret',
             resave: true,
-            saveUninitialized: true,
+            saveInitialized: true,
             store: new MongoStore({mongooseConnection: mongoose.connection})
         }));
         use(flash());

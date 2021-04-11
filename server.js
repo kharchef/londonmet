@@ -46,8 +46,7 @@ container.resolve(function(users){
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
 
-        ;
-        app.use(validator());
+        
         app.use(session({
             secret: 'thisisasecret',
             resave: true,

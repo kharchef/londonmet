@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const validator = require('express-validator')
 const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const passport = require('passport')
@@ -15,7 +15,7 @@ const passport = require('passport')
 
 container.resolve(function(users){
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://localhost/londonmet', {useMongoClient: true});
+    mongoose.connect('mongodb://localhost/londonmet')
 
     const app = SetupExpress();
 
@@ -25,7 +25,7 @@ container.resolve(function(users){
         server.listen(3000, function(){
             console.log('listening on port 3000');
         });
-        ConfigureExpress(app);
+        ConfigureExpress(app); 
 
 
 
@@ -40,6 +40,11 @@ container.resolve(function(users){
 
 
     function ConfigureExpress(app){
+        require('./passport/passport-local');
+
+
+
+
         app.use(express.static('public'));
         app.use(cookieParser());
         app.set('view engine', 'ejs');
@@ -47,13 +52,16 @@ container.resolve(function(users){
         app.use(bodyParser.urlencoded({extended: true}));
 
         
-        app.use(session({
-            secret: 'thisisasecret',
+        app.use(session({ 
+
+            secret: 'thisisasecret', 
             resave: true,
-            saveInitialized: true,
-            store: new MongoStore({mongooseConnection: mongoose.connection})
+            saveUninitialized: true,
+            store: new MongoStore({ mongoUrl: 'mongodb://localhost/londonmet'}) 
+        
         }));
-        use(flash());
+        
+        app.use(flash());
 
         app.use(passport.initialize());
         app.use(passport.session());

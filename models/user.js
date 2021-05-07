@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const passport = require('passport');
+
 
 const userSchema = mongoose.Schema({
     username: {type: String, uninque: true},
@@ -9,10 +9,8 @@ const userSchema = mongoose.Schema({
     email: {type: String, uninque: true},
     password: {type: String, default: ''},
     userImage: {type: String, default: 'default.png'},
-    facebook: {type: String, default: ''},
-    fbTokens: Array,
     google: {type: String, default: ''},
-    googleToken: Array,
+    
 });
 
 userSchema.methods.encryptPassword = function(password){

@@ -5,17 +5,20 @@ const container = require('./container');
 const { userInfo } = require('os');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
-const validator = require('express-validator')
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const passport = require('passport')
+const expressValidator = require('express-validator');
 
 
-container.resolve(function(users){
+
+container.resolve(function(users, _, admin, home){
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://localhost/londonmet')
+    mongoose.connect('mongodb://localhost/londonmet', 
+    { useNewUrlParser: true ,
+    useUnifiedTopology: true})
 
     const app = SetupExpress();
 
@@ -33,6 +36,8 @@ container.resolve(function(users){
     //setup router
     const router = require('express-promise-router')();
     users.SetRouting(router);
+    admin.SetRouting(router);
+    home.SetRouting(router);
 
     app.use(router);
 }
@@ -41,8 +46,9 @@ container.resolve(function(users){
 
     function ConfigureExpress(app){
         require('./passport/passport-local');
+        require('./passport/google-passport');
 
-
+        
 
 
         app.use(express.static('public'));
@@ -50,9 +56,13 @@ container.resolve(function(users){
         app.set('view engine', 'ejs');
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
-
+        app.use(expressValidator());
         
-        app.use(session({ 
+         
+        
+
+    
+         app.use(session({ 
 
             secret: 'thisisasecret', 
             resave: true,
@@ -65,5 +75,7 @@ container.resolve(function(users){
 
         app.use(passport.initialize());
         app.use(passport.session());
+
+        app.locals._ = _;
     }
 });

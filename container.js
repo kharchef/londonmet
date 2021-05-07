@@ -1,13 +1,18 @@
 const dependable = require('dependable');
 const path = require('path');
+const formidable = require('formidable');
 
 const container = dependable.container();
 
 const simpleDependencies = [
     ['_', 'lodash'],
     ['mongoose', 'mongoose'],
-    ['passport', 'passport']
-
+    ['passport', 'passport'],
+    ['formidable','formidable'],
+    ['async', 'async'],
+    ['Group','./models/groups'],
+    ['aws','./helperss/AWSUpload'],
+    ['multer', 'multer']
 ];
 
 simpleDependencies.forEach(function(val){
